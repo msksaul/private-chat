@@ -5,10 +5,11 @@ import { nanoid } from 'nanoid'
 import { z } from 'zod'
 import { authMiddleware } from './auth'
 
-const ROOM_TTL_SECONDS = 60 * 10
+const ROOM_TTL_SECONDS = 60
 
 const rooms = new Elysia({ prefix: '/room'})
-  .post('/create', async () => {
+  .post('/create', async ({ body }) => {
+    const { ttl } = body
     const roomId = nanoid()
 
     await redis.hset(`meta:${roomId}`, {
@@ -16,9 +17,13 @@ const rooms = new Elysia({ prefix: '/room'})
       createdAt: Date.now()
     })
 
-    await redis.expire(`meta:${roomId}`, ROOM_TTL_SECONDS)
+    await redis.expire(`meta:${roomId}`, ttl ? ttl*ROOM_TTL_SECONDS : 600)
 
     return { roomId }
+  }, {
+    body: z.object({
+      ttl: z.number()
+    })
   })
   .use(authMiddleware)
   .get('/ttl', async ({ auth }) => {
