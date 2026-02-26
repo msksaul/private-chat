@@ -6,7 +6,7 @@ import { useRealtime } from '@/lib/realtime-client'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { format } from 'date-fns'
 import { useParams, useRouter } from 'next/navigation'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 function formatTimeRemaining(seconds: number) {
   const mins = Math.floor(seconds / 60)
@@ -22,8 +22,23 @@ const Room = () => {
   const router = useRouter()
 
   const [copyStatus, setCopyStatus] = useState('COPY')
-  const [timeRemaining, setTimeRemaining] = useState<number | null>(null)
   const [input, setInput] = useState('')
+  
+  const { data: ttlData } = useQuery({
+    queryKey: ['ttl', roomId],
+    queryFn: async () => {
+      const res = await client.room.ttl.get({
+        query: { roomId }
+      })
+
+      setTimeRemaining(res.data?.ttl || 0)
+      return res.data
+    }
+  })
+
+  const [timeRemaining, setTimeRemaining] = useState<number | null>(
+    () => (ttlData?.ttl !== undefined ? ttlData.ttl : null)
+  )
 
   const { data: messages, refetch } = useQuery({
     queryKey: ['messages', roomId],
@@ -73,6 +88,34 @@ const Room = () => {
     }, 2000);
   }
 
+  const { mutate: destroyRoom } = useMutation({
+    mutationFn: async () => {
+      await client.room.delete(null, { query: { roomId }})
+    }
+  })
+
+  useEffect(() => {
+    if(timeRemaining === null || timeRemaining < 0) return
+
+    if(timeRemaining === 0) {
+      router.push('/?destroyed=true')
+      return
+    }
+
+    const interval = setInterval(() => {
+      setTimeRemaining((prev) => {
+        if(prev === null || prev <= 1) {
+          clearInterval(interval)
+          return 0
+        }
+
+        return prev-1
+      })
+    }, 1000);
+
+    return () => clearInterval(interval)
+  }, [timeRemaining, router])
+
   return (
     <main className='flex flex-col h-screen max-h-screen overflow-hidden'>
       <header className='border-b border-zinc-800 p-4 flex items-center justify-between bg-zinc-900/30'>
@@ -101,7 +144,10 @@ const Room = () => {
           </div>
         </div>
 
-        <button className='text-xs bg-zinc-800 hover:bg-red-600 px-3 py-1.5 rounded text-zinc-400 hover:text-white font-bold transition-all group flex items-center gap-2 disabled:opacity-50'>
+        <button 
+          onClick={() => destroyRoom()}
+          className='text-xs bg-zinc-800 hover:bg-red-600 px-3 py-1.5 rounded text-zinc-400 hover:text-white font-bold transition-all group flex items-center gap-2 disabled:opacity-50'
+        >
           <span className='group-hover:animate-pulse'>💣</span>
           DESTROY NOW
         </button>

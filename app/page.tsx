@@ -4,8 +4,27 @@ import { useUsername } from '@/hooks/use-username'
 import { client } from '@/lib/client'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { Suspense } from 'react'
 
 export default function Home() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <Lobby />
+    </Suspense>
+  )
+}
+
+export const Loading = () => {
+  return (
+    <main className='flex min-h-screen flex-col items-center justify-center p-4'>
+      <h1 className='text-2xl font-bold tracking-tight text-zinc-500'>
+        Loading...
+      </h1>
+    </main>
+  )
+}
+
+export const Lobby = () => {
 
   const router = useRouter()
   const { username } = useUsername()
