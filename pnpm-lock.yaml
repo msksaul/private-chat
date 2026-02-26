@@ -20,6 +20,9 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.90.21
         version: 5.90.21(react@19.2.3)
+      '@upstash/realtime':
+        specifier: ^1.0.2
+        version: 1.0.2(@upstash/redis@1.36.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(zod@4.3.6)
       '@upstash/redis':
         specifier: ^1.36.2
         version: 1.36.2
@@ -41,6 +44,9 @@ importers:
       react-dom:
         specifier: 19.2.3
         version: 19.2.3(react@19.2.3)
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
     devDependencies:
       '@tailwindcss/postcss':
         specifier: ^4
@@ -733,6 +739,19 @@ packages:
     resolution: {integrity: sha512-lrW200hZdbfRtztbygyaq/6jP6AKE8qQN2KvPcJ+x7wiD038YtnYtZ82IMNJ69GJibV7bwL3y9FgK+5w/pYt6g==}
     cpu: [x64]
     os: [win32]
+
+  '@upstash/realtime@1.0.2':
+    resolution: {integrity: sha512-b5ZdkjgG/ri1MIHDQ2mwZv/Ci9ZHGFKUWYkweNr3X8gFHWAXzY5E+WqrLwiK26sTAgb1vI+Lpy4dtDWTPEoPNw==}
+    peerDependencies:
+      '@upstash/redis': '>=1.35.4'
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+      zod: ^3.25.0 || ^4.0.0
+    peerDependenciesMeta:
+      react:
+        optional: true
+      react-dom:
+        optional: true
 
   '@upstash/redis@1.36.2':
     resolution: {integrity: sha512-C0Yt8hc12vLaQYRG1fMci8iPrLtnTdbJG0HR5T8vKnvEP/1RdMMblsOJs5/jp0JXZJ1oSzMnQz4J9EVezNpI6A==}
@@ -2680,6 +2699,14 @@ snapshots:
 
   '@unrs/resolver-binding-win32-x64-msvc@1.11.1':
     optional: true
+
+  '@upstash/realtime@1.0.2(@upstash/redis@1.36.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(zod@4.3.6)':
+    dependencies:
+      '@upstash/redis': 1.36.2
+      zod: 4.3.6
+    optionalDependencies:
+      react: 19.2.3
+      react-dom: 19.2.3(react@19.2.3)
 
   '@upstash/redis@1.36.2':
     dependencies:
