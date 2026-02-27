@@ -2,6 +2,7 @@
 
 import { useUsername } from '@/hooks/use-username'
 import { client } from '@/lib/client'
+import { STORAGE_KEY } from '@/lib/constants'
 import { useRealtime } from '@/lib/realtime-client'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { format } from 'date-fns'
@@ -74,6 +75,7 @@ const Room = () => {
       }
 
       if(event == 'chat.destroy') {
+        localStorage.removeItem(STORAGE_KEY)
         router.push('/?destroyed=true')
       }
     }
@@ -161,7 +163,7 @@ const Room = () => {
         )}
 
         {messages?.messages.map(msg => (
-          <div key={msg.id} className='flex flex-col items-start'>
+          <div key={msg.id} className={`flex flex-col ${msg.sender === username ? 'items-end' : 'items-start'}`}>
             <div className='max-w-[80%] group'>
               <div className='flex items-baseline gap-3 mb-1'>
                 <span className={`text-xs font-bold ${msg.sender === username ? 'text-green-500' : 'text-blue-500'}`}>

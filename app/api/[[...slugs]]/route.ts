@@ -4,8 +4,9 @@ import Elysia from 'elysia'
 import { nanoid } from 'nanoid'
 import { z } from 'zod'
 import { authMiddleware } from './auth'
+import { ROOM_TTL_SECONDS } from '@/lib/constants'
 
-const ROOM_TTL_SECONDS = 60
+
 
 const rooms = new Elysia({ prefix: '/room'})
   .post('/create', async ({ body }) => {
@@ -40,7 +41,6 @@ const rooms = new Elysia({ prefix: '/room'})
      redis.del(`messages:${auth.roomId}`)
 
     ])
-
   }, { query: z.object({ roomId: z.string() })})
 
 const messages = new Elysia({ prefix: '/messages'})

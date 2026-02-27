@@ -1,8 +1,6 @@
+import { ANIMALS, STORAGE_KEY } from '@/lib/constants'
 import { nanoid } from 'nanoid'
 import { useEffect, useState } from 'react'
-
-const ANIMALS = ['wolf', 'hawk', 'bear', 'shark']
-const STORAGE_KEY = 'chat_username'
 
 const generateUsername = () => {
   const word = ANIMALS[Math.floor(Math.random() * ANIMALS.length)]

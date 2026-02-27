@@ -2,11 +2,10 @@
 
 import { useUsername } from '@/hooks/use-username'
 import { client } from '@/lib/client'
+import { timeValues } from '@/lib/constants'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Suspense, useState } from 'react'
-
-const timeValues = [10, 20, 30, 40, 50, 60] as const
 
 export default function Home() {
   return (
@@ -89,7 +88,7 @@ export const Lobby = () => {
             {'>'}private_chat
           </h1>
           <p className='text-zinc-500 text-sm'>
-            a private, self-destructing chat room.
+            A private, self-destructing chat room.
           </p>
         </div>
 
@@ -109,7 +108,7 @@ export const Lobby = () => {
                   <select 
                     name='time values' 
                     id='time-values' 
-                    className='mr-2'
+                    className='mr-2 outline-0'
                     onChange={(e) => setRoomTime(Number(e.target.value))}
                     value={roomTime}
                   >
