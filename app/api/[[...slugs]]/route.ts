@@ -1,6 +1,7 @@
 import { Message, realtime } from '@/lib/realtime'
 import { redis } from '@/lib/redis'
 import Elysia from 'elysia'
+import { cors } from '@elysiajs/cors'
 import { nanoid } from 'nanoid'
 import { z } from 'zod'
 import { authMiddleware } from './auth'
@@ -94,6 +95,13 @@ const messages = new Elysia({ prefix: '/messages'})
   }, { query: z.object({ roomId: z.string() })})
 
 const app = new Elysia({ prefix: "/api" })
+  .use(cors({
+    origin: process.env.NODE_ENV === 'production' 
+      ? `https://${process.env.NEXT_PUBLIC_BASE_URL!}` 
+      : true, 
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+  }))
   .use(rooms)
   .use(messages)
   
